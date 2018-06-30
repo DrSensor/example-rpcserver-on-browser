@@ -1,0 +1,49 @@
+{
+  "name": "reverse-rpc",
+  "description": "PoC for changing behaviour of front-end application via CLI",
+  "version": "0.0.0",
+  "author": "DrSensor",
+  "bin": {
+    "reverse-rpc": "./bin/run"
+  },
+  "bugs": "https://github.com/DrSensor/example-rpcserver-on-browser/issues",
+  "dependencies": {
+    "@oclif/command": "^1",
+    "@oclif/config": "^1",
+    "@oclif/plugin-help": "^2",
+    "tslib": "^1"
+  },
+  "devDependencies": {
+    "@oclif/tslint": "^1",
+    "@types/chai": "^4",
+    "@types/mocha": "^5",
+    "@types/node": "^10",
+    "ts-node": "^6",
+    "tslint": "^5",
+    "typescript": "^2.9"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/lib"
+  ],
+  "homepage": "https://github.com/DrSensor/example-rpcserver-on-browser",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "oclif": {
+    "bin": "reverse-rpc"
+  },
+  "repository": "DrSensor/example-rpcserver-on-browser",
+  "scripts": {
+    "posttest": "tsc -p . --noEmit && tslint -p . -t stylish",
+    "prepack": "rm -rf lib && tsc",
+    "prepare": "rm -rf lib && tsc",
+    "test": "echo NO TESTS"
+  },
+  "types": "lib/index.d.ts"
+}
