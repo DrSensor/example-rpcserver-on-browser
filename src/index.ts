@@ -1,5 +1,7 @@
 // tslint:disable:no-unused
 import {Command, flags} from '@oclif/command'
+import serve = require('webpack-serve')
+import config from './webpack.config'
 
 class ReverseRpc extends Command {
   static description = 'Reverse RPC that can control webapp behaviour'
@@ -19,6 +21,10 @@ class ReverseRpc extends Command {
   ]
   async run() {
     const {args, flags} = this.parse(ReverseRpc)
+    serve({
+      config,
+      open: flags.open
+    })
   }
 }
 
