@@ -11,19 +11,21 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
-    "webpack": "^4.14.0",
-    "webpack-serve": "^1.0.4",
     "html-webpack-plugin": "^3.2.0",
-    "tslib": "^1"
+    "svelte": "^2.9.0",
+    "svelte-loader": "^2.9.1",
+    "tslib": "^1",
+    "webpack": "^4.14.0",
+    "webpack-serve": "^1.0.4"
   },
   "devDependencies": {
     "@oclif/tslint": "^1",
     "@types/chai": "^4",
+    "@types/html-webpack-plugin": "^2.30.3",
     "@types/mocha": "^5",
     "@types/node": "^10",
     "@types/webpack": "^4.4.4",
     "@types/webpack-serve": "^1.0.3",
-    "@types/html-webpack-plugin": "^2.30.3",
     "ts-node": "^6",
     "tslint": "^5",
     "typescript": "^2.9"
