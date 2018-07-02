@@ -5,6 +5,9 @@ import HtmlWebpackPlugin = require('html-webpack-plugin')
 export default {
   mode: 'development',
   entry: path.resolve(__dirname, '../public/index.js'),
+  resolve: {
+    modules: [path.resolve(__dirname, '../node_modules')]
+  },
   module: {
     rules: [{
       test: /\.html$/,
