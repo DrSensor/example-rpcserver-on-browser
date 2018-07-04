@@ -1,6 +1,7 @@
 import path = require('path')
 import fs = require('fs')
 import webpack = require('webpack')
+import HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
 
 const check = (str: string) => fs.lstatSync(path.resolve(str))
 
@@ -38,5 +39,24 @@ export default class WebpackConfigurator {
     this._config.resolve!.alias = {'@': contentDir}
     this._config.context = contentDir
     // #endregion
+  }
+
+  addCDNPlugin(urlList: string[]) {
+    const {parse} = path
+    const cdnName = (url: string) => parse(url).name.substr(0, parse(url).name.indexOf('.'))
+
+    const externalScriptPlugin = new HtmlWebpackExternalsPlugin({
+      externals: urlList.map(
+        url => ({
+          module: cdnName(url),
+          entry: {
+            path: url,
+            type: 'js'
+          }
+        } as HtmlWebpackExternalsPlugin.External)
+      )
+    })
+
+    this._config.plugins!.push(externalScriptPlugin)
   }
 }

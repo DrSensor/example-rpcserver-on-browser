@@ -26,6 +26,7 @@ class ReverseRpc extends Command {
     const webpack = new WebpackConfigure(config)
 
     webpack.changeContext(args.content)
+    webpack.addCDNPlugin(flags.cdn)
     serve({
       config: webpack.config,
       open: flags.open
