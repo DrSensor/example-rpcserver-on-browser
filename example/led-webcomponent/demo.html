@@ -1,8 +1,57 @@
 <h1>hw-led demo</h1>
 <center>
-  <hw-led size="10mm" input-voltage="2.8V" input-current="20mA"></hw-led>
+  <hw-led size="6mm" input-voltage="2.8V" input-current="20mA"></hw-led>
 </center>
 
-<script>
+<script type="application/javascript">
   import './hw-led.js';
+  const JSONRPC = require('jsonrpc-bidirectional');
+
+  class DOMPlugin extends JSONRPC.ServerPluginBase {
+    constructor(elementsGenerator) {
+      super();
+      this.getElements = elementsGenerator;
+    }
+
+    callFunction(incomingRequest) {
+      const {endpoint, requestObject:{method, params}} = incomingRequest;
+      if (typeof endpoint[method] !== 'function') {
+        incomingRequest.endpoint[method] = () => this.getElements().map(
+          el => el.setAttribute(method, params[0])
+        );
+      }
+    }
+  }
+
+  class LedEndpoint extends JSONRPC.EndpointBase {
+    constructor() { super('LED', '/rpc', {}) }
+
+    get leds() { return Array.from(document.getElementsByTagName('hw-led')) }
+
+    input(incomingRequest, voltage, current) {
+      this.leds.forEach(led => {
+        led.setAttribute('input-voltage', voltage);
+        led.setAttribute('input-current', current);
+      });
+    }
+
+    '.status'(incomingRequest) {
+      return this.leds.map(
+        led => led.vueComponent.broken ? 'Broken ⚡' : 'OK'
+      );
+    }
+  }
+
+  let jsonrpcServer = new JSONRPC.Server();
+  let ws = new WebSocket(`ws://${window.location.host}/rpc`);
+  let endpoint = new LedEndpoint();
+  jsonrpcServer.registerEndpoint(endpoint);
+
+  // By default, JSONRPC.Server rejects all requests as not authenticated and not authorized.
+  jsonrpcServer.addPlugin(new JSONRPC.Plugins.Server.AuthenticationSkip());
+  jsonrpcServer.addPlugin(new JSONRPC.Plugins.Server.AuthorizeAll());
+  jsonrpcServer.addPlugin(new DOMPlugin(() => endpoint.leds));
+
+  let wsJSONRPCRouter = new JSONRPC.BidirectionalWebsocketRouter(jsonrpcServer);
+  wsJSONRPCRouter.addWebSocketSync(ws);
 </script>
