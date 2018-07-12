@@ -1,18 +1,34 @@
 reverse-rpc
 ===========
 
+[![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/DrSensor)
+
 PoC for changing behaviour of front-end application via CLI
 
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/reverse-rpc.svg)](https://npmjs.org/package/reverse-rpc)
-[![CircleCI](https://circleci.com/gh/DrSensor/example-rpcserver-on-browser/tree/master.svg?style=shield)](https://circleci.com/gh/DrSensor/example-rpcserver-on-browser/tree/master)
-[![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/DrSensor/example-rpcserver-on-browser?branch=master&svg=true)](https://ci.appveyor.com/project/DrSensor/example-rpcserver-on-browser/branch/master)
-[![Codecov](https://codecov.io/gh/DrSensor/example-rpcserver-on-browser/branch/master/graph/badge.svg)](https://codecov.io/gh/DrSensor/example-rpcserver-on-browser)
-[![Downloads/week](https://img.shields.io/npm/dw/reverse-rpc.svg)](https://npmjs.org/package/reverse-rpc)
-[![License](https://img.shields.io/npm/l/reverse-rpc.svg)](https://github.com/DrSensor/example-rpcserver-on-browser/blob/master/package.json)
-
-<!-- toc -->
 # Usage
-<!-- usage -->
-# Commands
-<!-- commands -->
+```console
+$ reverse-rpc --help
+Reverse RPC that can control webapp behaviour
+
+USAGE
+  $ reverse-rpc CONTENT
+
+ARGUMENTS
+  CONTENT  .html file or directory that contain .html component that want to be served.
+           Default is `index.html` if it's directory
+
+OPTIONS
+  -c, --cdn=cdn  inject script tag of URL of the external script (CDN)
+  --open         open browser on start
+```
+
+# Install
+```bash
+git clone https://github.com/DrSensor/example-rpcserver-on-browser.git
+cd example-rpcserver-on-browser
+npm install
+sudo npm link
+```
+
+# License
+[CDDL 1.0](https://opensource.org/licenses/CDDL-1.0)
