@@ -49,6 +49,10 @@ class ReverseRpc extends Command {
     const webpackServer = await serve({
       config: webpack.config,
       open: flags.open,
+      dev: {
+        publicPath: '/',
+        stats: 'errors-only', // don't print when new compilation happen
+      },
       add: app => app.use(event.routes()).use(event.allowedMethods())
     })
 
