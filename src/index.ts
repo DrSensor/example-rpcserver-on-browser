@@ -1,26 +1,11 @@
-// tslint:disable:no-console
 import {Command, flags} from '@oclif/command'
 import serve = require('webpack-serve')
 
 import WebpackConfigure from './dynamic-config'
 import config from './webpack.config'
+
 import event, {tab} from './controller/event'
-
-// #region helper function to count state and print it when exit
-let count = {} as {[key: string]: number}
-
-const print = (msg: string) => {
-  console.log(`\n${msg} at ${new Date().toLocaleTimeString()}\n`)
-  const state = msg.split(' ')[0]
-  count[state] = ++count[state] || 1
-}
-
-const close = (server: serve.Instance) => {
-  count.CLOSE += 1
-  console.log(JSON.stringify(count, null, 2))
-  server.close()
-}
-// #endregion
+import REPL from './interface/repl'
 
 class ReverseRpc extends Command {
   static description = 'Reverse RPC that can control webapp behaviour'
@@ -42,6 +27,7 @@ class ReverseRpc extends Command {
   async run() {
     const {args, flags} = this.parse(ReverseRpc)
     const webpack = new WebpackConfigure(config)
+    const repl = new REPL()
 
     webpack.changeContext(args.content)
     webpack.addCDNPlugin(flags.cdn)
@@ -56,12 +42,12 @@ class ReverseRpc extends Command {
       add: app => app.use(event.routes()).use(event.allowedMethods())
     })
 
-    tab.on('close', id => tab.allClosed ? close(webpackServer) : print(`CLOSE ${id}`))
+    webpackServer.on('build-finished', () => repl.promptAfter(1))//seconds
+    repl.on('close', () => webpackServer.close())
 
-    tab.on('open', id => print(`OPEN ${id}`))
-    tab.on('reload', id => print(`RELOAD ${id}`))
-    tab.on('hide', id => print(`HIDE ${id}`))
-    tab.on('show', id => print(`SHOW ${id}`))
+    tab.on('hide', () => {if (tab.allInactive) repl.pause()})
+    tab.on('show', () => {if (repl.isPause) repl.resume()})
+    tab.on('close', () => {if (tab.allClosed) repl.close()})
   }
 }
 
