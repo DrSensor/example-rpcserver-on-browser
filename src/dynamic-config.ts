@@ -36,7 +36,10 @@ export default class WebpackConfigurator {
 
     // #region 🐥assign final value
     this._config.plugins!.push(new webpack.DefinePlugin(globalConstant))
-    this._config.resolve!.alias = {'@': contentDir}
+    this._config.resolve!.alias = {
+      '@': contentDir,
+      '#': resolve(__dirname, '../public'),
+    }
     this._config.context = contentDir
     // #endregion
   }

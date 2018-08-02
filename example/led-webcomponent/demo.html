@@ -1,8 +1,31 @@
 <h1>hw-led demo</h1>
 <center>
-  <hw-led size="10mm" input-voltage="2.8V" input-current="20mA"></hw-led>
+  <hw-led size="10mm"></hw-led>
 </center>
 
 <script>
   import './hw-led.js';
+  import RPCServer, {EndpointBase} from '#/RPCServer'
+
+  class LedEndpoint extends EndpointBase {
+    constructor() { super('LED', '/rpc', {}) }
+
+    get leds() { return Array.from(document.getElementsByTagName('hw-led')) }
+
+    input(incomingRequest, voltage, current) {
+      this.leds.forEach(led => {
+        led.setAttribute('input-voltage', voltage);
+        led.setAttribute('input-current', current);
+      });
+    }
+
+    '.status'(incomingRequest) {
+      return this.leds.map(
+        led => led.vueComponent.broken ? 'Broken ⚡' : 'OK'
+      );
+    }
+  }
+
+  let endpoint = new LedEndpoint();
+  RPCServer.register(endpoint, () => endpoint.leds);
 </script>
