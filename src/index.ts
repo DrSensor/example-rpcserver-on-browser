@@ -4,6 +4,7 @@ import serve = require('webpack-serve')
 import WebpackConfigure from './dynamic-config'
 import config from './webpack.config'
 
+import ClientRPC, {LED} from './controller/rpc'
 import event, {tab} from './controller/event'
 import REPL from './interface/repl'
 
@@ -27,6 +28,7 @@ class ReverseRpc extends Command {
   async run() {
     const {args, flags} = this.parse(ReverseRpc)
     const webpack = new WebpackConfigure(config)
+    const remote = new ClientRPC(LED)
     const repl = new REPL()
 
     webpack.changeContext(args.content)
@@ -42,12 +44,22 @@ class ReverseRpc extends Command {
       add: app => app.use(event.routes()).use(event.allowedMethods())
     })
 
-    webpackServer.on('build-finished', () => repl.promptAfter(1))//seconds
-    repl.on('close', () => webpackServer.close())
+    webpackServer.on('listening', ({server}) => {
+      remote.upgrade(server)
+            .on('connected', () => repl.to(remote.Client))
+    })
+
+    webpackServer.on('build-finished', () => repl.promptOnceAfter(1))//seconds
 
     tab.on('hide', () => {if (tab.allInactive) repl.pause()})
     tab.on('show', () => {if (repl.isPause) repl.resume()})
+
     tab.on('close', () => {if (tab.allClosed) repl.close()})
+
+    repl.on('close', () => {
+      remote.close()
+      webpackServer.close()
+    })
   }
 }
 
