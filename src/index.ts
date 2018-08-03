@@ -28,6 +28,7 @@ class ReverseRpc extends Command {
   async run() {
     const {args, flags} = this.parse(ReverseRpc)
     const webpack = new WebpackConfigure(config)
+    // @ts-ignore BUG: can't write class inheret another class from ambient declaration
     const remote = new ClientRPC(LED)
     const repl = new REPL()
 
@@ -37,6 +38,10 @@ class ReverseRpc extends Command {
     const webpackServer = await serve({
       config: webpack.config,
       open: flags.open,
+      hot: {
+        hmr: true,
+        reload: true,
+      },
       dev: {
         publicPath: '/',
         stats: 'errors-only', // don't print when new compilation happen
@@ -49,7 +54,7 @@ class ReverseRpc extends Command {
             .on('connected', () => repl.to(remote.Client))
     })
 
-    webpackServer.on('build-finished', () => repl.promptOnceAfter(1))//seconds
+    webpackServer.on('build-finished', () => repl.promptAfter(1))//seconds
 
     tab.on('hide', () => {if (tab.allInactive) repl.pause()})
     tab.on('show', () => {if (repl.isPause) repl.resume()})

@@ -54,6 +54,7 @@ export default class extends EventEmitter {
     if (!this.client)
       this.repl.on('line', line => this.callRPC(line))
     this.client = client
+    this.repl.prompt()
     // this.repl.on('line', this.listen) cause this.client undefined 🤔
   }
 
